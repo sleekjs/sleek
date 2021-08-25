@@ -10,10 +10,18 @@ module.exports = function resolve({HTML = '', CSS = '', JS = ''}) {
 
 	recast.visit(ast, {
 		visitImportDeclaration(path) {
-			const {HTML: _HTML, CSS: _CSS, JS: _JS} = split(fs.readFileSync(path.node.source.value, 'utf8'));
 			const name = path.node.specifiers[0].local.name;
+			const tagRegex = new RegExp(`(<${name}><\/${name}>|<${name}\/?>)`, 'g');
 
-			HTML = HTML.replace(new RegExp(`(<${name}><\/${name}>|<${name}\/?>)`, 'g'), _HTML)
+			if (!tagRegex.test(HTML)) {
+				// unused component
+				path.replace(b.emptyStatement());
+				return false;
+			}
+
+			const {HTML: _HTML, CSS: _CSS, JS: _JS} = split(fs.readFileSync(path.node.source.value, 'utf8'));
+
+			HTML = HTML.replace(tagRegex, _HTML)
 
 			CSS += _CSS;
 

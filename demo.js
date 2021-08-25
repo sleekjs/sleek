@@ -3,6 +3,7 @@ const parse = require('./index');
 let {HTML, CSS, JS} = parse(`
 <script>
 	import Hello from 'hello.fwrk';
+	import Foo from 'nowhere';
 	const name = 'world';
 
 	function getColor(text) {
