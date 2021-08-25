@@ -1,4 +1,4 @@
-export function split(code, wrap = false) {
+export function split(code) {
 	let HTML = code, CSS = '', JS = '';
 
 	HTML = HTML.replace(/<script[\s\S]*?>([\s\S]*?)<\/script>/gi, (_match, $1) => {
@@ -15,21 +15,6 @@ export function split(code, wrap = false) {
 	JS = JS.trim();
 	CSS = CSS.trim();
 	HTML = HTML.trim();
-
-	if (wrap) HTML = `
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset='UTF-8'>
-	<title>My app</title>
-	<link rel='stylesheet' href='<%css%>.css'>
-</head>
-<body>
-${HTML}
-<script src='<%js%>.js'></script>
-</body>
-</html>
-`.trim();
 
 	return {HTML, CSS, JS};
 }

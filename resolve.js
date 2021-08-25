@@ -2,6 +2,7 @@ import recast from 'recast';
 import fs from 'fs';
 
 import {split} from './split.js';
+import {scope} from './scope.js';
 
 const b = recast.types.builders;
 
@@ -15,11 +16,11 @@ export function resolve({HTML = '', CSS = '', JS = ''}) {
 
 			if (!tagRegex.test(HTML)) {
 				// unused component
-				path.replace(b.emptyStatement());
+				path.replace()
 				return false;
 			}
 
-			const {HTML: _HTML, CSS: _CSS, JS: _JS} = split(fs.readFileSync(path.node.source.value, 'utf8'));
+			const {HTML: _HTML, CSS: _CSS, JS: _JS} = scope(split(fs.readFileSync(path.node.source.value, 'utf8')));
 
 			HTML = HTML.replace(tagRegex, _HTML)
 
@@ -33,6 +34,8 @@ export function resolve({HTML = '', CSS = '', JS = ''}) {
 			return false;
 		}
 	});
+
+	({HTML, CSS, JS} = scope({HTML, CSS, JS}));
 
 	JS = recast.print(ast).code;
 

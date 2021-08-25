@@ -1,1 +1,7 @@
 <h1>Hello</h1>
+
+<style>
+* {
+	color: blue;
+}
+</style>
