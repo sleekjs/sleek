@@ -1,6 +1,7 @@
 import {parse} from './index.js';
 import fs from 'fs';
 
+/*
 let {HTML, CSS, JS} = parse(`
 <script>
 import Hello from 'hello.fwrk';
@@ -28,6 +29,23 @@ setInterval(() => seconds++, 1000)
 }
 </style>
 `.trim());
+*/
+
+let {HTML, CSS, JS} = parse(`
+<script>
+import Hello from 'hello.fwrk';
+</script>
+
+<!-- This will be blue, as defined in hello.fwrk -->
+<Hello/>
+
+<p>This will be red</p>
+
+<style>
+* {
+	color: red;
+}
+`.trim())
 
 HTML = HTML.replace(/<%(css|js)%>/g, 'bundle')
 
