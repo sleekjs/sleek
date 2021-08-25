@@ -1,4 +1,4 @@
-module.exports = function split(code, wrap = false) {
+export function split(code, wrap = false) {
 	let HTML = code, CSS = '', JS = '';
 
 	HTML = HTML.replace(/<script[\s\S]*?>([\s\S]*?)<\/script>/gi, (_match, $1) => {

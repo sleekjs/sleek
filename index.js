@@ -1,7 +1,7 @@
-const split = require('./split');
-const resolve = require('./resolve');
+import {split} from './split.js';
+import {resolve} from './resolve.js';
 
-module.exports = function parse(code) {
+export function parse(code) {
 	const {HTML, CSS, JS} = resolve(split(code, true));
 
 	return {HTML, CSS, JS};

@@ -1,4 +1,5 @@
-const parse = require('./index');
+import {parse} from './index.js';
+import fs from 'fs';
 
 let {HTML, CSS, JS} = parse(`
 <script>
@@ -30,7 +31,6 @@ let {HTML, CSS, JS} = parse(`
 
 HTML = HTML.replace(/<%(css|js)%>/g, 'bundle')
 
-const fs = require('fs');
 fs.writeFileSync('bundle.html', HTML);
 fs.writeFileSync('bundle.css', CSS);
 fs.writeFileSync('bundle.js', JS);

@@ -1,11 +1,11 @@
-const recast = require('recast');
-const fs = require('fs');
+import recast from 'recast';
+import fs from 'fs';
 
-const split = require('./split');
+import {split} from './split.js';
 
 const b = recast.types.builders;
 
-module.exports = function resolve({HTML = '', CSS = '', JS = ''}) {
+export function resolve({HTML = '', CSS = '', JS = ''}) {
 	const ast = recast.parse(JS);
 
 	recast.visit(ast, {
