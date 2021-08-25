@@ -11,9 +11,8 @@ module.exports = function resolve({HTML = '', CSS = '', JS = ''}) {
 	recast.visit(ast, {
 		visitImportDeclaration(path) {
 			const {HTML: _HTML, CSS: _CSS, JS: _JS} = split(fs.readFileSync(path.node.source.value, 'utf8'));
-			const name = path.node.specifiers.local.name;
+			const name = path.node.specifiers[0].local.name;
 
-			console.log(typeof HTML);
 			HTML = HTML.replace(new RegExp(`(<${name}><\/${name}>|<${name}\/?>)`, 'g'), _HTML)
 
 			CSS += _CSS;

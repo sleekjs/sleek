@@ -1,6 +1,6 @@
 const parse = require('./index');
 
-console.log(parse(`
+let {HTML, CSS, JS} = parse(`
 <script>
 	import Hello from 'hello.fwrk';
 	const name = 'world';
@@ -21,8 +21,16 @@ console.log(parse(`
 <p>You have been here for {seconds} seconds</p>
 
 <style>
-	* {
-		color: red;
-	}
+* {
+	color: red;
+}
 </style>
-`.trim()))
+`.trim());
+
+HTML = HTML.replace(/<%(css|js)%>/g, 'bundle')
+
+const fs = require('fs');
+fs.writeFileSync('bundle.html', HTML);
+fs.writeFileSync('bundle.css', CSS);
+fs.writeFileSync('bundle.js', JS);
+

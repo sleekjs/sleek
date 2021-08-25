@@ -1,4 +1,4 @@
-module.exports = function split(code) {
+module.exports = function split(code, wrap = false) {
 	let HTML = code, CSS = '', JS = '';
 
 	HTML = HTML.replace(/<script[\s\S]*?>([\s\S]*?)<\/script>/gi, (_match, $1) => {
@@ -16,7 +16,7 @@ module.exports = function split(code) {
 	CSS = CSS.trim();
 	HTML = HTML.trim();
 
-	HTML = `
+	if (wrap) HTML = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,7 +29,7 @@ ${HTML}
 <script src='<%js%>.js'></script>
 </body>
 </html>
-	`.trim();
+`.trim();
 
 	return {HTML, CSS, JS};
 }
