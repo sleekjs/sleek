@@ -36,4 +36,4 @@ import Hello from 'hello.fwrk';
 
 ```
 
-Check out the output in [`bundle.html`](./bundle.html)
+Check out the output in [`bundle/bundle.html`](./bundle/bundle.html)

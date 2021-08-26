@@ -17,7 +17,7 @@ export function scope({HTML = '', CSS = '', JS}) {
 	let CSSData = parseCSS(CSS);
 
 	CSSData.stylesheet.rules.forEach(rule => {
-		rule.selectors = rule.selectors.map(selector => {
+		if (rule.selectors) rule.selectors = rule.selectors.map(selector => {
 			let temp = selector.split(/ (?![^\[]*\])/g);
 
 			temp[0] = temp[0] + `[${id}]`;
