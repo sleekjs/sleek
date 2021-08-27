@@ -1,22 +1,22 @@
-import recast from 'recast';
+import {visit, types, parse, print} from 'recast';
 import fs from 'fs';
 
 import {split} from './split.js';
 import {scope} from './scope.js';
 
-const b = recast.types.builders;
+const b = types.builders;
 
 export function resolve({HTML = '', CSS = '', JS = ''}) {
-	const ast = recast.parse(JS);
+	const ast = parse(JS);
 
-	recast.visit(ast, {
+	visit(ast, {
 		visitImportDeclaration(path) {
 			const name = path.node.specifiers[0].local.name;
 			const tagRegex = new RegExp(`(<${name}><\/${name}>|<${name}\/?>)`, 'g');
 
 			if (!tagRegex.test(HTML)) {
 				// unused component
-				path.replace()
+				path.replace();
 				return false;
 			}
 
@@ -26,18 +26,18 @@ export function resolve({HTML = '', CSS = '', JS = ''}) {
 
 			CSS += _CSS;
 
-			path.replace(
-				b.blockStatement(
-					recast.parse(_JS).program.body
-				)
-			)
+			path.replace(b.blockStatement(parse(_JS).program.body))
 			return false;
 		}
 	});
 
+	// Wrap in block statements
+	// TODO better way
+	ast.program.body = ast.program.body.map(node => ({body: [node], loc: null, type: 'BlockStatement', comments: null, directives: []}));
+
 	({HTML, CSS, JS} = scope({HTML, CSS, JS}));
 
-	JS = recast.print(ast).code;
+	JS = print(ast).code;
 
 	return {HTML, CSS, JS}
 } 
