@@ -1,0 +1,22 @@
+<script>
+import Hello from './hello.fwrk';
+
+setInterval(() => document.querySelector('p').classList.toggle('show'), 1000);
+</script>
+
+<!-- This will be blue, as defined in hello.fwrk -->
+<Hello/>
+
+<p>This will be red</p>
+
+<style>
+p {
+	opacity: 0;
+	transition: opacity 1s;
+	color: red;
+}
+
+p.show {
+	opacity: 1;
+}
+</style>
