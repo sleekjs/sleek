@@ -14,7 +14,7 @@ export function parse(code) {
 </head>
 <body>
 ${HTML.split('\n').map(line => '\t' + line).join('\n')}
-<script src='<%js%>.js'></script>
+	<script src='<%js%>.js'></script>
 </body>
 </html>
 `.trim();
