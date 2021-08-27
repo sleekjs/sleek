@@ -1,0 +1,11 @@
+<script>
+import Up from './up.fwrk'
+</script>
+
+You <Up/>
+
+<style>
+* {
+	color: green;
+}
+</style>

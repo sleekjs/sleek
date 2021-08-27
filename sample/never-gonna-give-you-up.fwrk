@@ -1,0 +1,11 @@
+<script>
+import GonnaGiveYouUp from './gonna-give-you-up.fwrk';
+</script>
+
+<p>Never <GonnaGiveYouUp/></p>
+
+<style>
+* {
+	color: red;
+}
+</style>

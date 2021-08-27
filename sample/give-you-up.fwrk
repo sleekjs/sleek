@@ -1,0 +1,11 @@
+<script>
+import YouUp from './you-up.fwrk'
+</script>
+
+Give <YouUp/>
+
+<style>
+* {
+	color: orange;
+}
+</style>
