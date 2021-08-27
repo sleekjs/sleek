@@ -12,7 +12,7 @@ export function resolve({HTML = '', CSS = '', JS = ''}) {
 	visit(ast, {
 		visitImportDeclaration(path) {
 			const name = path.node.specifiers[0].local.name;
-			const tagRegex = new RegExp(`(<${name}><\/${name}>|<${name}\/?>)`, 'g');
+			const tagRegex = new RegExp(`<${name}\s*(.*?)><\/${name}>|<${name}\s*(.*?)\/>`, 'gi');
 
 			if (!tagRegex.test(HTML)) {
 				// unused component
@@ -20,9 +20,12 @@ export function resolve({HTML = '', CSS = '', JS = ''}) {
 				return false;
 			}
 
-			const {HTML: _HTML, CSS: _CSS, JS: _JS} = scope(split(fs.readFileSync(path.node.source.value, 'utf8')));
+			const {HTML: _HTML, CSS: _CSS, JS: _JS} = resolve(scope(split(fs.readFileSync(path.node.source.value, 'utf8'))));
 
-			HTML = HTML.replace(tagRegex, _HTML)
+			HTML = HTML.replace(tagRegex, (_match, $1, $2) => {
+				let props = $1 ?? $2; // TODO use props
+				return _HTML;
+			});
 
 			CSS += _CSS;
 
