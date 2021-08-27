@@ -1,4 +1,3 @@
-export const sample1 = `
 <script>
 import Hello from 'hello.fwrk';
 import Foo from 'nowhere';
@@ -24,21 +23,3 @@ setInterval(() => seconds++, 1000)
 	color: red;
 }
 </style>
-`.trim();
-
-export const sample2 = `
-<script>
-import Hello from 'hello.fwrk';
-</script>
-
-<!-- This will be blue, as defined in hello.fwrk -->
-<Hello/>
-
-<p>This will be red</p>
-
-<style>
-* {
-	color: red;
-}
-</style>
-`.trim();

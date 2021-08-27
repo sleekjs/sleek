@@ -1,0 +1,17 @@
+<h1>Hello</h1>
+
+<style>
+h1 {
+	color: blue;
+	opacity: 0;
+	transition: opacity 1s;
+}
+
+.show {
+	opacity: 1;
+}
+</style>
+
+<script>
+setInterval(() => document.querySelector('h1').classList.toggle('show'), 1000);
+</script>
