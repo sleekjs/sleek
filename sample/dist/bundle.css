@@ -1,0 +1,19 @@
+p[fwrk-zvep94uPSV] {
+  opacity: 0;
+  transition: opacity 1s;
+  color: red;
+}
+
+p.show[fwrk-zvep94uPSV] {
+  opacity: 1;
+}
+
+h1[fwrk-AQebxAJw5V][fwrk-zvep94uPSV] {
+  color: blue;
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.show[fwrk-AQebxAJw5V][fwrk-zvep94uPSV] {
+  opacity: 1;
+}
