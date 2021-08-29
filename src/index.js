@@ -1,10 +1,12 @@
 import {split} from './split.js';
 import {resolve} from './resolve.js';
 
-export function parse(code) {
+export function parse(code, options) {
 	let {HTML, CSS, JS} = resolve(split(code, true));
 
-	HTML = `
+	if (options.wrapInHTML) {
+		if (options.HTMLTemplate) HTML = options.HTMLTemplate.replace('<%html%>', HTML);
+		else HTML = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,7 +19,8 @@ ${HTML.split('\n').map(line => '\t' + line).join('\n')}
 	<script src='<%js%>.js'></script>
 </body>
 </html>
-`.trim();
+		`.trim();
+	}
 
 
 	return {HTML, CSS, JS};
