@@ -9,8 +9,21 @@ import {scope} from './scope.js';
 
 const b = types.builders;
 
+/*
+ * Resolve import statements in a component
+ * @param {Object} code - An object containing the HTML, CSS and JS for the code
+ * @param {string} code.HTML - The HTML code
+ * @param {string} code.CSS - The CSS code
+ * @param {string} code.JS - The JS code
+ * @return {Object} code - The resolved code
+ * @return {string} code.HTML - The resolved HTML code
+ * @return {string} code.CSS - The resolved CSS code
+ * @return {string} code.JS - The resolved JS code
+ */
 export function resolve({HTML = '', CSS = '', JS = ''}) {
 	const ast = parse(JS);
+
+	({HTML, CSS, JS} = scope({HTML, CSS, JS}));
 
 	visit(ast, {
 		visitImportDeclaration(path) {
@@ -53,8 +66,6 @@ export function resolve({HTML = '', CSS = '', JS = ''}) {
 		comments: null,
 		directives: []
 	}));
-
-	({HTML, CSS, JS} = scope({HTML, CSS, JS}));
 
 	JS = print(ast).code;
 

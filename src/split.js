@@ -1,3 +1,11 @@
+/*
+ * Split a component
+ * @param {string} code - The code to split
+ * @return {Object} code - The split code
+ * @return {string} code.HTML - The split HTML code
+ * @return {string} code.CSS - The split CSS code
+ * @return {string} code.JS - The split JS code
+ */
 export function split(code) {
 	let HTML = code, CSS = '', JS = '';
 
