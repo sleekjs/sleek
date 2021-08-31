@@ -23,8 +23,6 @@ const b = types.builders;
 export function resolve({HTML = '', CSS = '', JS = ''}) {
 	const ast = parse(JS);
 
-	({HTML, CSS, JS} = scope({HTML, CSS, JS}));
-
 	visit(ast, {
 		visitImportDeclaration(path) {
 			const name = path.node.specifiers[0].local.name;
@@ -58,14 +56,8 @@ export function resolve({HTML = '', CSS = '', JS = ''}) {
 	});
 
 	// Wrap in block statements
-	// TODO better way
-	ast.program.body = ast.program.body.map(node => ({
-		body: [node],
-		loc: null,
-		type: 'BlockStatement',
-		comments: null,
-		directives: []
-	}));
+
+	({HTML, CSS, JS} = scope({HTML, CSS, JS}));
 
 	JS = print(ast).code;
 
