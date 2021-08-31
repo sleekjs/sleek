@@ -13,5 +13,6 @@ h1 {
 </style>
 
 <script>
-setInterval(() => document.querySelector('h1').classList.toggle('show'), 1000);
+const interval = 1500;
+setInterval(() => document.querySelector('h1').classList.toggle('show'), interval);
 </script>

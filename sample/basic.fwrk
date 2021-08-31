@@ -1,7 +1,8 @@
 <script>
 import Hello from './hello.fwrk';
 
-setInterval(() => document.querySelector('p').classList.toggle('show'), 1000);
+const interval = 1000;
+setInterval(() => document.querySelector('p').classList.toggle('show'), interval);
 </script>
 
 <!-- This will be blue, as defined in hello.fwrk -->
