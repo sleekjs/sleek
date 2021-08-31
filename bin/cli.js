@@ -10,7 +10,7 @@ const input = argv.i || argv.input;
 
 if (input) {
 	const contents = fs.readFileSync(input, 'utf8');
-	let {HTML, CSS, JS} = parse(contents);
+	let {HTML, CSS, JS} = parse(contents, {wrapInHTML: argv.wrap || argv.w || true});
 
 	const output = (argv.o || argv.output || 'dist');
 	fs.mkdir(output, () => {});
