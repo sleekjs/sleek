@@ -1,6 +1,5 @@
 import {parse, print, visit, types} from 'recast';
 import chalk from 'chalk';
-import diff from 'fast-diff';
 
 const {builders: b} = types;
 
@@ -29,7 +28,7 @@ export function makeReactive(JS) {
 
 const original = `
 const foo = 1;
-doSomethingWith(foo);
+bar(foo);
 
 $: console.log(foo * 2);
 
@@ -40,14 +39,4 @@ foo++;
 
 const changed = makeReactive(original);
 
-const d = diff(original, changed);
-
-let whole = '';
-
-d.forEach((part) => {
-	const color = part[0] === 1 ? 'green' :
-		part[0] == -1 ? 'red' : 'grey';
-	whole += (chalk[color](part[1]));
-});
-
-console.log(whole)
+console.log(changed, chalk.red('\n\n------\n\n'), original);
