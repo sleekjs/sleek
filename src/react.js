@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import {parse, print, types, visit} from 'recast';
 
 const {builders: b, namedTypes: n} = types;
@@ -64,19 +63,3 @@ export function makeReactive(JS) {
 
 	return JS;
 }
-
-const original = `
-const foo = 1;
-bar(foo);
-
-$: console.log(foo * 2);
-
-// later...
-foo = 10;
-foo++;
-foo += 10;
-`.trim();
-
-const changed = makeReactive(original);
-
-console.log(changed, chalk.red('\n\n------\n\n'), original);
