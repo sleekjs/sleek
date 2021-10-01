@@ -24,7 +24,7 @@ export function scope(
 	const document = parseHTML(HTML);
 
 	document.childNodes = document.childNodes.map(node => {
-		if (node.nodeName == '#text') {
+		if (node.nodeName === '#text') {
 			node.nodeName = node.tagName = 'span';
 			node.attrs = [];
 			node.namespaceURI = 'http://www.w3.org/1999/xhtml';
@@ -42,7 +42,7 @@ export function scope(
 
 	document.childNodes
 		.filter(node => !node.nodeName.startsWith('#'))
-		.forEach(node => node.attrs.push({name: id, value: ''}));
+		.forEach(node => node.attrs.push({name: 'class', value: id}));
 
 	HTML = serializeHTML(document);
 
