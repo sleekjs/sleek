@@ -24,12 +24,6 @@ export function makeReactive(JS) {
 	}
 
 	visit(ast, {
-		visitNode(path) {
-			console.log(path.node.type);
-			console.log(print(path).code);
-			console.log();
-			this.traverse(path);
-		},
 		visitUpdateExpression: visitUpdate
 	});
 
