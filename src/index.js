@@ -1,5 +1,6 @@
 import {split} from './split.js';
 import {resolve} from './resolve.js';
+import {makeReactive} from './react.js'
 
 /*
  * Parse a component
@@ -14,6 +15,8 @@ import {resolve} from './resolve.js';
  */
 export function parse(code = '', options = {}) {
 	let {HTML, CSS, JS} = resolve(split(code, true));
+
+	JS = makeReactive(JS);
 
 	if (options.wrapInHTML) {
 		if (options.HTMLTemplate) HTML = options.HTMLTemplate.replace('<%html%>', HTML.split('\n').map(line => '\t' + line).join('\n'));
