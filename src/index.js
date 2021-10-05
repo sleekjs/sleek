@@ -1,6 +1,6 @@
 import {split} from './split.js';
 import {resolve} from './resolve.js';
-import {makeReactive} from './react.js'
+import {makeReactive} from './react.js';
 
 /*
  * Parse a component
