@@ -8,6 +8,7 @@ function getColor(text) {
 }
 
 let seconds = 0;
+let mins = seconds / 60;
 
 setInterval(() => seconds++, 1000)
 </script>
@@ -16,7 +17,7 @@ setInterval(() => seconds++, 1000)
 
 <p style='color: {getColor(name)}'>This is your color</p>
 
-<p>You have been here for {seconds} seconds</p>
+<p>You have been here for {seconds} seconds ({mins} minutes)</p>
 
 <style>
 * {
