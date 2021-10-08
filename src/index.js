@@ -16,7 +16,7 @@ import {makeReactive} from './react.js';
 export function parse(code = '', options = {}) {
 	let {HTML, CSS, JS} = resolve(split(code, true));
 
-	JS = makeReactive(JS);
+	({HTML, JS} = makeReactive({HTML, JS}));
 
 	if (options.wrapInHTML) {
 		if (options.HTMLTemplate) HTML = options.HTMLTemplate.replace('<%html%>', HTML.split('\n').map(line => '\t' + line).join('\n'));
