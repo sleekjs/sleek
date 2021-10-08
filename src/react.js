@@ -1,6 +1,5 @@
 import {parse, print, types, visit} from 'recast';
-import {hasEmbeddedVariable} from './detect-embeds.js';
-import {resolveEmbeds, directEmbed} from './resolve-embeds.js'
+import {resolveBindings, directlyBind, hasBinding} from './bindings.js';
 
 const {builders: b} = types;
 let deps = {};
@@ -30,7 +29,7 @@ export function makeReactive({HTML: HTMLIn, JS}) {
 	ast.program.body.push(...finalReactiveCalls);
 
 	JS = print(ast).code;
-	HTML = resolveEmbeds(HTMLIn);
+	HTML = resolveBindings(HTMLIn);
 
 	return {HTML, JS};
 }
@@ -83,7 +82,7 @@ function secondVisitVariable(path) {
 						)
 					) : b.emptyStatement(),
 
-					hasEmbeddedVariable(HTML, declaration.id.name) ?
+					hasBinding(HTML, declaration.id.name) ?
 						parse(`document.getElementById('__bind__${declaration.id.name}').innerText = ${declaration.id.name}`).program.body[0] : b.emptyStatement(), // I'm lazy
 
 					...(deps[declaration.id.name] || []).map(
@@ -92,8 +91,9 @@ function secondVisitVariable(path) {
 						)
 					)
 				])
-			),
+			)
 		);
+
 		finalReactiveCalls.push(
 			b.expressionStatement(
 				b.callExpression(
@@ -160,7 +160,7 @@ function bindConsts(path) {
 	const reactiveDeclarators = [];
 
 	for (const declaration of path.node.declarations) {
-		HTML = directEmbed(HTML, declaration.id.name, eval(print(declaration.init).code))
+		HTML = directlyBind(HTML, declaration.id.name, eval(print(declaration.init).code))
 	}
 
 	path.replace(path.node, ...reactiveDeclarators);
