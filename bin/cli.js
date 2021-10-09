@@ -1,25 +1,25 @@
 #!/usr/bin/env node
-import fs from 'node:fs';
-import minimist from 'minimist';
-import path from 'node:path';
+import {parse as parseArgs} from 'https://deno.land/std@0.110.0/flags/mod.ts';
+import {ensureDir} from 'https://deno.land/std@0.110.0/fs/mod.ts';
+import {resolve} from 'https://deno.land/std@0.110.0/path/mod.ts';
 import {parse} from '../src/index.js';
 
-const argv = minimist(process.argv.slice(2));
+const argv = parseArgs(Deno.args);
 
 const input = argv.i || argv.input;
 
 if (input) {
-	const contents = fs.readFileSync(input, 'utf8');
+	const contents = Deno.readTextFileSync(input, 'utf8');
 	let {HTML, CSS, JS} = parse(contents, {wrapInHTML: argv.wrap || argv.w || true});
 
 	const output = (argv.o || argv.output || 'dist');
-	fs.mkdir(output, () => {});
+	await ensureDir(output);
 
 	HTML = HTML.replace(/<%(css|js)%>/g, 'bundle');
 
-	fs.writeFile(path.resolve(output + '/index.html'), HTML, error => console.log(error || 'Wrote HTML'));
-	fs.writeFile(path.resolve(output + '/bundle.css'), CSS, error => console.log(error || 'Wrote CSS'));
-	fs.writeFile(path.resolve(output + '/bundle.js'), JS, error => console.log(error || 'Wrote JS'));
+	Deno.writeTextFile(resolve(output + '/index.html'), HTML);
+	Deno.writeTextFile(resolve(output + '/bundle.css'), CSS);
+	Deno.writeTextFile(resolve(output + '/bundle.js'), JS);
 } else {
 	console.error('No entry point was provided');
 }

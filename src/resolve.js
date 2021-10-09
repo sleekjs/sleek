@@ -1,12 +1,12 @@
-import fs from 'node:fs';
-import {visit, types, parse, print} from 'recast';
-import {nanoid} from 'nanoid';
+import recast from 'https://dev.jspm.io/recast';
+import {nanoid} from 'https://deno.land/x/nanoid@v3.0.0/mod.ts';
 
-import {basename} from 'node:path';
+import {basename} from 'https://deno.land/std@0.110.0/path/mod.ts';
 
 import {split} from './split.js';
 import {scope} from './scope.js';
 
+const {parse, print, types, visit} = recast;
 const b = types.builders;
 
 /*
@@ -45,7 +45,7 @@ export function resolve({HTML = '', CSS = '', JS = ''}) {
 			const {HTML: _HTML, CSS: _CSS, JS: _JS} = resolve(
 				scope(
 					split(
-						fs.readFileSync(path.node.source.value, 'utf8')
+						Deno.readTextFileSync(path.node.source.value, 'utf8')
 					),
 					basename(path.node.source.value).replace(/\..*$/g, '') + '-' + nanoid(5)
 				)

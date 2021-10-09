@@ -1,6 +1,6 @@
-import {nanoid} from 'nanoid';
-import {parseFragment as parseHTML, serialize as serializeHTML} from 'parse5';
-import {parse as parseCSS, stringify as serializeCSS} from 'css';
+import {nanoid} from 'https://deno.land/x/nanoid@v3.0.0/mod.ts';
+import HTMLHandler from 'https://dev.jspm.io/parse5';
+import CSSHandler from 'https://dev.jspm.io/css';
 
 /*
  * Scope the given component
@@ -19,10 +19,10 @@ export function scope(
 ) {
 	const id = 'sleek-' + scopeName;
 
-	const document = parseHTML(HTML);
+	const document = HTMLHandler.parseFragment(HTML);
 
 	document.childNodes = document.childNodes.map(node => {
-		if (node.nodeName == '#text') {
+		if (node.nodeName === '#text') {
 			node.nodeName = node.tagName = 'span';
 			node.attrs = [];
 			node.namespaceURI = 'http://www.w3.org/1999/xhtml';
@@ -40,14 +40,13 @@ export function scope(
 		return node;
 	});
 
-	for (const node of document.childNodes
-		.filter(node => !node.nodeName.startsWith('#'))) {
+	for (const node of document.childNodes.filter(node => !node.nodeName.startsWith('#'))) {
 		node.attrs.push({name: id, value: ''});
 	}
 
-	HTML = serializeHTML(document);
+	HTML = HTMLHandler.serialize(document);
 
-	const CSSData = parseCSS(CSS);
+	const CSSData = CSSHandler.parse(CSS);
 
 	for (const rule of CSSData.stylesheet.rules) {
 		if (rule.selectors) {
@@ -65,7 +64,7 @@ export function scope(
 		}
 	}
 
-	CSS = serializeCSS(CSSData);
+	CSS = CSSHandler.stringify(CSSData);
 
 	return {HTML, CSS, JS};
 }

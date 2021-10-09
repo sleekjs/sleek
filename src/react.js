@@ -1,6 +1,7 @@
-import {parse, print, types, visit} from 'recast';
+import recast from 'https://dev.jspm.io/recast';
 import {resolveBindings, directlyBind, hasBinding} from './bindings.js';
 
+const {parse, print, types, visit} = recast;
 const {builders: b} = types;
 let deps = {};
 let depsInverted = false;
