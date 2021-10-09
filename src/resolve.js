@@ -1,8 +1,8 @@
+import fs from 'node:fs';
 import {visit, types, parse, print} from 'recast';
 import {nanoid} from 'nanoid';
 
-import fs from 'fs';
-import {basename} from 'path';
+import {basename} from 'node:path';
 
 import {split} from './split.js';
 import {scope} from './scope.js';
@@ -22,14 +22,22 @@ const b = types.builders;
  */
 export function resolve({HTML = '', CSS = '', JS = ''}) {
 	const ast = parse(JS);
+	const props = {};
 
 	visit(ast, {
 		visitImportDeclaration(path) {
-			const name = path.node.specifiers[0].local.name;
+			const {name} = path.node.specifiers[0].local;
+			const source = path.node.source.value;
+
+			if (source === 'props') {
+				props[name] = props[name] ?? [];
+				return false;
+			}
+
 			const tagRegex = new RegExp(`<${name}\s*(.*?)><\/${name}>|<${name}\s*(.*?)\/>`, 'gi');
 
 			if (!tagRegex.test(HTML)) {
-				// unused component
+				// Unused component
 				path.replace();
 				return false;
 			}
@@ -44,14 +52,43 @@ export function resolve({HTML = '', CSS = '', JS = ''}) {
 			);
 
 			HTML = HTML.replace(tagRegex, (_match, $1, $2) => {
-				let props = $1 ?? $2; // TODO use props
+				const currProps = ($1 ?? $2)
+					.trim()
+					.split(' ')
+					.map(item => item.split('='));
+
+				for (const prop of currProps) {
+					props[prop[0]] = props[prop[0]] ?? [];
+					props[prop[0]].push(prop[1]);
+				}
+				console.log(props);
+
 				return _HTML;
 			});
 
 			CSS += _CSS;
 
-			path.replace(b.blockStatement(parse(_JS).program.body))
+			path.replace(b.blockStatement(parse(_JS).program.body));
 			return false;
+		}
+	});
+
+	visit(ast, {
+		visitImportDeclaration(path) {
+			console.log('Visit import v2');
+			const name = path.node.specifiers[0].local.name;
+
+			if (path.node.source.value === 'props') {
+				console.log(props);
+				path.replace(
+					...(props[name] || []).map(prop => b.variableDeclaration(
+						'const',
+						b.identifier(prop[0]),
+						b.literal(prop[1])
+					))
+				);
+				return false;
+			}
 		}
 	});
 
@@ -61,5 +98,5 @@ export function resolve({HTML = '', CSS = '', JS = ''}) {
 
 	JS = print(ast).code;
 
-	return {HTML, CSS, JS}
+	return {HTML, CSS, JS};
 }

@@ -7,10 +7,11 @@
  * @return {string} code.JS - The split JS code
  */
 export function split(code) {
-	let HTML = code, CSS = '', JS = '';
+	let HTML = code; let CSS = ''; let
+		JS = '';
 
 	HTML = HTML.replace(/<script[\s\S]*?>([\s\S]*?)<\/script>/gi, (_match, $1) => {
-		JS += '\n\n' + $1; // safety
+		JS += '\n\n' + $1; // Safety
 		return '';
 	});
 

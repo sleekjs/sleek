@@ -37,29 +37,37 @@ export function scope(
 			];
 			delete node.value;
 			return node;
-		} else return node;
+		}
+
+		return node;
 	});
 
-	document.childNodes
-		.filter(node => !node.nodeName.startsWith('#'))
-		.forEach(node => node.attrs.push({name: id, value: ''}));
+	for (const node of document.childNodes
+		.filter(node => !node.nodeName.startsWith('#'))) {
+		node.attrs.push({name: id, value: ''});
+	}
 
 	HTML = serializeHTML(document);
 
-	let CSSData = parseCSS(CSS);
+	const CSSData = parseCSS(CSS);
 
-	CSSData.stylesheet.rules.forEach(rule => {
-		if (rule.selectors) rule.selectors = rule.selectors.map(selector => {
-			let temp = selector.split(/ (?![^\[]*\])/g);
+	for (const rule of CSSData.stylesheet.rules) {
+		if (rule.selectors) {
+			rule.selectors = rule.selectors.map(selector => {
+				const temporary = selector.split(/ (?![^[]*])/g);
 
-			if (!/\[fwrk-[A-Za-z0-9_-]+?\]/g.test(selector)) temp[0] = temp[0] + `[${id}]`;
-			selector = temp.join(' ');
+				if (!/\[fwrk-[\w-]+?]/g.test(selector)) {
+					temporary[0] += `[${id}]`;
+				}
 
-			return selector;
-		});
-	});
+				selector = temporary.join(' ');
+
+				return selector;
+			});
+		}
+	}
 
 	CSS = serializeCSS(CSSData);
 
-	return {HTML, CSS, JS}
+	return {HTML, CSS, JS};
 }

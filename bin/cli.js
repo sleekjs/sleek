@@ -1,8 +1,8 @@
 #!/usr/bin/env node
+import fs from 'node:fs';
 import minimist from 'minimist';
+import path from 'node:path';
 import {parse} from '../src/index.js';
-import fs from 'fs';
-import path from 'path';
 
 const argv = minimist(process.argv.slice(2));
 
@@ -17,9 +17,9 @@ if (input) {
 
 	HTML = HTML.replace(/<%(css|js)%>/g, 'bundle');
 
-	fs.writeFile(path.resolve(output + '/index.html'), HTML, err => console.log(err || 'Wrote HTML'));
-	fs.writeFile(path.resolve(output + '/bundle.css'), CSS, err => console.log(err || 'Wrote CSS'));
-	fs.writeFile(path.resolve(output + '/bundle.js'), JS, err => console.log(err || 'Wrote JS'));
+	fs.writeFile(path.resolve(output + '/index.html'), HTML, error => console.log(error || 'Wrote HTML'));
+	fs.writeFile(path.resolve(output + '/bundle.css'), CSS, error => console.log(error || 'Wrote CSS'));
+	fs.writeFile(path.resolve(output + '/bundle.js'), JS, error => console.log(error || 'Wrote JS'));
 } else {
 	console.error('No entry point was provided');
 }

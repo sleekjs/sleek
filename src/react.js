@@ -5,7 +5,7 @@ const {builders: b} = types;
 let deps = {};
 let depsInverted = false;
 let HTML = '';
-let finalReactiveCalls = [];
+const finalReactiveCalls = [];
 
 export function makeReactive({HTML: HTMLIn, JS}) {
 	HTML = HTMLIn;
@@ -160,7 +160,7 @@ function bindConsts(path) {
 	const reactiveDeclarators = [];
 
 	for (const declaration of path.node.declarations) {
-		HTML = directlyBind(HTML, declaration.id.name, eval(print(declaration.init).code))
+		HTML = directlyBind(HTML, declaration.id.name, eval(print(declaration.init).code));
 	}
 
 	path.replace(path.node, ...reactiveDeclarators);

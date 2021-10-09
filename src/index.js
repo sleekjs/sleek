@@ -19,8 +19,10 @@ export function parse(code = '', options = {}) {
 	({HTML, JS} = makeReactive({HTML, JS}));
 
 	if (options.wrapInHTML) {
-		if (options.HTMLTemplate) HTML = options.HTMLTemplate.replace('<%html%>', HTML.split('\n').map(line => '\t' + line).join('\n'));
-		else HTML = `
+		if (options.HTMLTemplate) {
+			HTML = options.HTMLTemplate.replace('<%html%>', HTML.split('\n').map(line => '\t' + line).join('\n'));
+		} else {
+			HTML = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,8 +36,8 @@ ${HTML.split('\n').map(line => '\t' + line).join('\n')}
 </body>
 </html>
 		`.trim();
+		}
 	}
-
 
 	return {HTML, CSS, JS};
 }
