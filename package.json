@@ -1,5 +1,5 @@
 {
-	"name": "fwrk",
+	"name": "sleek",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
@@ -10,15 +10,15 @@
 	"bin": "./bin/cli.js",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/SiddharthShyniben/fwrk.git"
+		"url": "git+https://github.com/sleekjs/sleek.git"
 	},
 	"keywords": [],
 	"author": "SiddharthShyniben <siddharth.muscat@gmail.com> (https://github.com/SiddharthShyniben)",
 	"license": "GPL-3.0",
 	"bugs": {
-		"url": "https://github.com/SiddharthShyniben/fwrk/issues"
+		"url": "https://github.com/sleekjs/sleek/issues"
 	},
-	"homepage": "https://github.com/SiddharthShyniben/fwrk#readme",
+	"homepage": "https://github.com/sleejs/sleek#readme",
 	"dependencies": {
 		"css": "^3.0.0",
 		"minimist": "^1.2.5",

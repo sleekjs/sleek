@@ -17,9 +17,7 @@ export function scope(
 	{HTML = '', CSS = '', JS},
 	scopeName = nanoid(10).toLowerCase()
 ) {
-	// TODO scope JS
-	// Maybe store a counter?
-	const id = 'fwrk-' + scopeName;
+	const id = 'sleek-' + scopeName;
 
 	const document = parseHTML(HTML);
 
@@ -56,7 +54,7 @@ export function scope(
 			rule.selectors = rule.selectors.map(selector => {
 				const temporary = selector.split(/ (?![^[]*])/g);
 
-				if (!/\[fwrk-[\w-]+?]/g.test(selector)) {
+				if (!/\[sleek-[\w-]+?]/g.test(selector)) {
 					temporary[0] += `[${id}]`;
 				}
 
