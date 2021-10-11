@@ -8,7 +8,7 @@ let depsInverted = false;
 let HTML = '';
 const finalReactiveCalls = [];
 
-export function makeReactive({HTML: HTMLIn, JS}) {
+export function makeReactive({HTML: HTMLIn, CSS, JS}) {
 	HTML = HTMLIn;
 
 	const ast = parse(JS);
@@ -32,7 +32,7 @@ export function makeReactive({HTML: HTMLIn, JS}) {
 	JS = print(ast).code;
 	HTML = resolveBindings(HTMLIn);
 
-	return {HTML, JS};
+	return {HTML, CSS, JS};
 }
 
 function visitVariable(path) {

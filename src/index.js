@@ -13,10 +13,8 @@ import {makeReactive} from './react.js';
  * @return {string} code.CSS - The parsed CSS code
  * @return {string} code.JS - The parsed JS code
  */
-export function parse(code = '', options = {}) {
-	let {HTML, CSS, JS} = resolve(split(code, true));
-
-	({HTML, JS} = makeReactive({HTML, JS}));
+export function parse(code = '', options = {wrapInHTML: true, HTMLTemplate: null}) {
+	let {HTML, CSS, JS} = makeReactive(resolve(split(code, true)));
 
 	if (options.wrapInHTML) {
 		if (options.HTMLTemplate) {
