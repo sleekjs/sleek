@@ -1,4 +1,5 @@
 import HTMLHandler from 'https://dev.jspm.io/parse5';
+import {nanoid} from 'https://deno.land/x/nanoid@v3.0.0/mod.ts';
 
 export function parseEvents({HTML, CSS, JS}) {
 	const parsedHTML = HTMLHandler.parseFragment(HTML);
@@ -18,7 +19,8 @@ export function parseEvents({HTML, CSS, JS}) {
 			const name = attr.name.toLowerCase();
 
 			if (name.startsWith('on')) {
-				const eventSlug = `handle-${name.slice(2)}-${attr.value.replace(/[\(\)\{\}\'\"]*/gi, '')}`;
+				console.log('Got event!!');
+				const eventSlug = `handle-${name.slice(2)}-${attr.value.replace(/[[\](){}'"]*/gi, '')}-${nanoid(5)}`;
 
 				JS += '\n\n';
 				JS += `

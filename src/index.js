@@ -1,6 +1,7 @@
 import {split} from './split.js';
 import {resolve} from './resolve.js';
 import {makeReactive} from './react.js';
+import {parseEvents} from './events.js';
 
 /*
  * Parse a component
@@ -14,7 +15,7 @@ import {makeReactive} from './react.js';
  * @return {string} code.JS - The parsed JS code
  */
 export function parse(code = '', options = {wrapInHTML: true, HTMLTemplate: null}) {
-	let {HTML, CSS, JS} = makeReactive(resolve(split(code, true)));
+	let {HTML, CSS, JS} = makeReactive(parseEvents(resolve(split(code, true))));
 
 	if (options.wrapInHTML) {
 		if (options.HTMLTemplate) {
