@@ -6,19 +6,19 @@ const {builders: b} = types;
 let deps = {};
 let depsInverted = false;
 let HTML = '';
+let ast = {};
 const finalReactiveCalls = [];
 
 export function makeReactive({HTML: HTMLIn, CSS, JS}) {
 	HTML = HTMLIn;
 
-	const ast = parse(JS);
+	ast = parse(JS);
 
 	visit(ast, {
 		visitUpdateExpression: visitUpdate,
 		visitVariableDeclaration: visitVariable
 	});
 
-	// It works. Don't touch
 	visit(ast, {
 		visitVariableDeclaration: secondVisitVariable
 	});
@@ -46,6 +46,7 @@ function visitVariable(path) {
 
 		visit(declaration.init, {
 			visitIdentifier(path) {
+				// O(h no)
 				deps[declaration.id.name].push(path.node.name);
 				this.traverse(path);
 			}
@@ -84,7 +85,12 @@ function secondVisitVariable(path) {
 					) : b.emptyStatement(),
 
 					hasBinding(HTML, declaration.id.name) ?
-						parse(`document.getElementById('__bind__${declaration.id.name}').innerText = ${declaration.id.name}`).program.body[0] : b.emptyStatement(), // I'm lazy
+						buildBinding(declaration.id.name) : b.emptyStatement(),
+
+					hasAttributeBinding(declaration.id.name) ?
+						b.expressionStatement(
+							b.callExpression(b.identifier(hasAttributeBinding(declaration.id.name)), [])
+						) : b.emptyStatement(),
 
 					...(deps[declaration.id.name] || []).map(
 						dep => b.expressionStatement(
@@ -161,10 +167,46 @@ function bindConsts(path) {
 	const reactiveDeclarators = [];
 
 	for (const declaration of path.node.declarations) {
-		HTML = directlyBind(HTML, declaration.id.name, eval(print(declaration.init).code));
+		HTML = directlyBind(HTML, declaration.id.name,
+			eval(print(declaration.init).code)); // TODO no eval
 	}
 
 	path.replace(path.node, ...reactiveDeclarators);
 
 	return false;
+}
+
+function buildBinding(name) {
+	return b.expressionStatement(
+		b.assignmentExpression(
+			'=',
+			b.memberExpression(
+				b.callExpression(
+					b.memberExpression(
+						b.identifier('document'),
+						b.identifier('getElementById')
+					),
+					[b.literal('__bind__' + name)]
+				),
+				b.identifier('innerText')
+			),
+			b.identifier(name)
+		)
+	);
+}
+
+function hasAttributeBinding(name) {
+	let value = '';
+
+	visit(ast, {
+		visitFunctionDeclaration(path) {
+			if (path.node.id.name.startsWith(`__bind__attr__${name}__`)) {
+				value = path.node.id.name;
+			}
+
+			return false; // There will never be a nested fn we need
+		}
+	});
+
+	return value;
 }

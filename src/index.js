@@ -2,6 +2,7 @@ import {split} from './split.js';
 import {resolve} from './resolve.js';
 import {makeReactive} from './react.js';
 import {parseEvents} from './events.js';
+import {parseAttributeBindings} from './bind-attributes.js';
 
 /*
  * Parse a component
@@ -15,7 +16,7 @@ import {parseEvents} from './events.js';
  * @return {string} code.JS - The parsed JS code
  */
 export function parse(code = '', options = {wrapInHTML: true, HTMLTemplate: null}) {
-	let {HTML, CSS, JS} = makeReactive(parseEvents(resolve(split(code, true))));
+	let {HTML, CSS, JS} = makeReactive(parseAttributeBindings(parseEvents(resolve(split(code, true)))));
 
 	if (options.wrapInHTML) {
 		if (options.HTMLTemplate) {
@@ -41,3 +42,15 @@ ${HTML.split('\n').map(line => '\t' + line).join('\n')}
 	return {HTML, CSS, JS};
 }
 
+let out = parse(`<script>
+let disabled = false;
+let i = 0;
+</script>
+
+<button {disabled} onclick='i++; if (i > 5) disabled = true;'>Click me!</button>
+`);
+
+console.log(out.HTML);
+console.log();
+console.log();
+console.log(out.JS);

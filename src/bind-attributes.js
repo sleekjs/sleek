@@ -1,7 +1,7 @@
 import HTMLHandler from 'https://dev.jspm.io/parse5';
 import {nanoid} from 'https://deno.land/x/nanoid@v3.0.0/mod.ts';
 
-export function parseEvents({HTML, CSS, JS}) {
+export function parseAttributeBindings({HTML = '', CSS = '', JS = ''}) {
 	const parsedHTML = HTMLHandler.parseFragment(HTML);
 
 	function _parse(node) {
@@ -16,17 +16,17 @@ export function parseEvents({HTML, CSS, JS}) {
 		}
 
 		node.attrs = node.attrs.map(attr => {
-			const name = attr.name.toLowerCase();
+			const {name, value} = attr;
 
-			if (name.startsWith('on')) {
-				console.log('Got event!!');
-				const eventSlug = `handle-${name.slice(2)}-${attr.value.replace(/[[\](){}'"\s;+]*/gi, '')}-${nanoid(5)}`;
+			if (name.startsWith('{') && name.endsWith('}')) {
+				const cleanName = name.slice(1, -1);
+				const id = nanoid(5);
+				const eventSlug = `handle-${cleanName}-${id}`;
 
-				JS += '\n\n';
-				JS += `
-document.getElementById('${eventSlug}').addEventListener('${name.slice(2)}', function () {
-	${attr.value}
-});
+				JS += '\n\n' + `
+function __bind__attr__${cleanName}__${id}() {
+	document.getElementById('${eventSlug}').setAttribute('${cleanName}', ${value || cleanName});
+}
 				`.trim();
 
 				return ({name: 'id', value: eventSlug});
