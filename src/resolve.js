@@ -1,7 +1,7 @@
 import recast from 'https://dev.jspm.io/recast';
 import {nanoid} from 'https://deno.land/x/nanoid@v3.0.0/mod.ts';
 
-import {basename} from 'https://deno.land/std@0.110.0/path/mod.ts';
+import {basename, extname} from 'https://deno.land/std@0.110.0/path/mod.ts';
 
 import {split} from './split.js';
 import {scope} from './scope.js';
@@ -28,6 +28,98 @@ export function resolve({HTML = '', CSS = '', JS = ''}) {
 		visitImportDeclaration(path) {
 			const {name} = path.node.specifiers[0].local;
 			const source = path.node.source.value;
+
+			if (extname(source) === '.') {
+				throw new Error('Could not resolve import with no extension');
+			}
+
+			if (extname(source) === '.js') {
+				const imports = path.node.specifiers;
+				const out = [];
+
+				for (const _import of imports) {
+					const fileIn = Deno.readTextFileSync(source);
+					const fileAst = parse(fileIn);
+					const name = (_import.imported ?? _import.local)?.name;
+
+					let exportDefault = null, exportNamed = null;
+					let allExports = [];
+
+					visit(fileAst, {
+						visitExportNamedDeclaration(path) {
+							if (path.node.declaration.type === 'VariableDeclaration') {
+								visit(path.node.declaration, {
+									visitVariableDeclarator(path) {
+										if (path.node.id.name === name) {
+											exportNamed = path.node.init;
+										}
+
+										allExports.push({name: path.node.id, value: path.node.init});
+
+										return false;
+									}
+								});
+							} else {
+								const {params, body} = path.node.declaration;
+								if (path.node.declaration.id.name === name) {
+									exportNamed = b.functionExpression(null, params, body);
+								}
+
+								allExports.push({name: path.node.declaration.id, value: b.functionExpression(null, params, body)});
+							}
+
+							return false;
+						},
+						visitExportDefaultDeclaration(path) {
+							if (path.node.type === 'VariableDeclaration') {
+								exportDefault = path.node.declaration;
+							} else {
+								const {params, body} = path.node.declaration;
+								exportDefault = b.functionExpression(null, params, body);
+							}
+
+							allExports.push({name: b.identifier('default'), value: exportDefault});
+
+							return false;
+						}
+					});
+
+					if (_import.type === 'ImportNamespaceSpecifier') {
+						console.log(_import.local.name);
+						out.push(
+							b.variableDeclaration('const', [
+								b.variableDeclarator(
+									_import.local,
+									b.objectExpression([
+										...allExports.map(item => b.property(
+											'init',
+											item.name,
+											item.value
+										))
+									])
+								)
+							])
+						);
+						continue;
+					}
+
+					out.push(b.variableDeclaration('const', [
+						b.variableDeclarator(
+							_import.local,
+							_import.type === 'ImportDefaultSpecifier' ?
+								exportDefault : exportNamed
+						)
+					]));
+				}
+
+				path.replace(...out);
+
+				return false;
+			}
+
+			if (extname(source) === '.sleek' && path.node.specifiers[0].type !== 'ImportDefaultSpecifier') {
+				throw new Error('Only default importing components are allowed');
+			}
 
 			if (source === 'props') {
 				props[name] = props[name] ?? [];
@@ -61,7 +153,6 @@ export function resolve({HTML = '', CSS = '', JS = ''}) {
 					props[prop[0]] = props[prop[0]] ?? [];
 					props[prop[0]].push(prop[1]);
 				}
-				console.log(props);
 
 				return _HTML;
 			});
@@ -75,11 +166,9 @@ export function resolve({HTML = '', CSS = '', JS = ''}) {
 
 	visit(ast, {
 		visitImportDeclaration(path) {
-			console.log('Visit import v2');
 			const name = path.node.specifiers[0].local.name;
 
 			if (path.node.source.value === 'props') {
-				console.log(props);
 				path.replace(
 					...(props[name] || []).map(prop => b.variableDeclaration(
 						'const',
@@ -89,6 +178,8 @@ export function resolve({HTML = '', CSS = '', JS = ''}) {
 				);
 				return false;
 			}
+
+			return false;
 		}
 	});
 

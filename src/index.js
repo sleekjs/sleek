@@ -41,16 +41,3 @@ ${HTML.split('\n').map(line => '\t' + line).join('\n')}
 
 	return {HTML, CSS, JS};
 }
-
-let out = parse(`<script>
-let disabled = false;
-let i = 0;
-</script>
-
-<button {disabled} onclick='i++; if (i > 5) disabled = true;'>Click me!</button>
-`);
-
-console.log(out.HTML);
-console.log();
-console.log();
-console.log(out.JS);
