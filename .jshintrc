@@ -1,0 +1,6 @@
+{
+	"esversion": 11,
+	"globals": {
+		"Deno": true
+	}
+}
